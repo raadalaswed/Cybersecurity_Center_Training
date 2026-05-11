@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل التدريب الصيفي – قسم هندسة الأمن السيبراني</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg-deep:       #030b14;
+      --bg-card:       #061120;
+      --bg-input:      #0a1a2e;
+      --accent-cyan:   #00d4ff;
+      --accent-blue:   #0066ff;
+      --accent-green:  #00ff88;
+      --accent-warn:   #ffaa00;
+      --accent-red:    #ff3355;
+      --text-primary:  #e8f4ff;
+      --text-muted:    #5a7a99;
+      --border:        rgba(0,212,255,0.18);
+      --border-focus:  rgba(0,212,255,0.7);
+      --glow-cyan:     0 0 24px rgba(0,212,255,0.35);
+      --glow-blue:     0 0 32px rgba(0,102,255,0.4);
+      --radius:        14px;
+      --transition:    0.28s cubic-bezier(.4,0,.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ─── animated background grid ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridShift 20s linear infinite;
+      pointer-events: none; z-index: 0;
+    }
+    @keyframes gridShift {
+      from { background-position: 0 0; }
+      to   { background-position: 40px 40px; }
+    }
+
+    /* ─── floating orbs ─── */
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(80px); pointer-events: none; z-index: 0;
+    }
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,102,255,0.18), transparent 70%);
+      top: -100px; right: -150px;
+      animation: float1 12s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,212,255,0.12), transparent 70%);
+      bottom: -80px; left: -100px;
+      animation: float2 15s ease-in-out infinite;
+    }
+    @keyframes float1 {
+      0%,100%{transform:translate(0,0);} 50%{transform:translate(-30px,40px);}
+    }
+    @keyframes float2 {
+      0%,100%{transform:translate(0,0);} 50%{transform:translate(20px,-30px);}
+    }
+
+    /* ─── wrapper ─── */
+    .page-wrap {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      padding: 30px 16px 50px;
+    }
+
+    /* ─── header ─── */
+    .header {
+      text-align: center; margin-bottom: 28px;
+      animation: fadeDown .7s ease both;
+    }
+    .header-logo {
+      display: inline-flex; align-items: center; gap: 14px;
+      background: rgba(0,212,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 14px 28px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+    .shield-icon {
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 12px;
+      box-shadow: var(--glow-cyan);
+      font-size: 22px;
+    }
+    .header-logo-text {
+      text-align: right;
+    }
+    .logo-uni { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+    .logo-dept {
+      font-size: 15px; font-weight: 700;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header h1 {
+      font-size: clamp(22px,5vw,34px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 20%, var(--accent-cyan) 60%, var(--accent-blue));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1.3; margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 14px; color: var(--text-muted); max-width: 480px; margin: 0 auto;
+    }
+
+    /* ─── notice banner ─── */
+    .notice-banner {
+      width: 100%; max-width: 680px;
+      background: rgba(255,170,0,0.08);
+      border: 1px solid rgba(255,170,0,0.35);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex; align-items: flex-start; gap: 12px;
+      animation: fadeDown .8s .1s ease both;
+    }
+    .notice-banner .icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .notice-banner p { font-size: 13px; color: #ffd080; line-height: 1.7; }
+    .notice-banner strong { color: #ffaa00; }
+
+    /* ─── once-only banner ─── */
+    .once-banner {
+      width: 100%; max-width: 680px;
+      background: rgba(0,255,136,0.06);
+      border: 1px solid rgba(0,255,136,0.3);
+      border-radius: 12px;
+      padding: 12px 18px;
+      margin-bottom: 22px;
+      display: flex; align-items: center; gap: 12px;
+      animation: fadeDown .8s .15s ease both;
+    }
+    .once-banner .icon { font-size: 18px; flex-shrink: 0; }
+    .once-banner p { font-size: 13px; color: #80ffcc; line-height: 1.6; }
+    .once-banner strong { color: var(--accent-green); }
+
+    /* ─── card ─── */
+    .card {
+      width: 100%; max-width: 680px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 36px 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.06);
+      animation: fadeUp .7s .2s ease both;
+    }
+
+    /* ─── section title ─── */
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--accent-cyan); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 22px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-label::after {
+      content:''; flex:1; height:1px;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
+    /* ─── form grid ─── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .full { grid-column: 1 / -1; }
+
+    /* ─── field ─── */
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field label {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-primary); display: flex; align-items: center; gap: 6px;
+    }
+    .field label .req { color: var(--accent-red); font-size: 11px; }
+    .field label .opt { color: var(--text-muted); font-size: 11px; font-weight: 400; }
+
+    .field input, .field select, .field textarea {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      font-size: 14px;
+      padding: 13px 16px;
+      width: 100%;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 14px center;
+      padding-left: 40px;
+      cursor: pointer;
+    }
+    .field textarea {
+      resize: vertical; min-height: 90px; line-height: 1.6;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder { color: var(--text-muted); }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: var(--glow-cyan);
+      background: rgba(0,212,255,0.05);
+    }
+    .field input.error,
+    .field select.error,
+    .field textarea.error {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 16px rgba(255,51,85,0.3);
+    }
+
+    /* readonly / locked field */
+    .field input[readonly], .field select[disabled] {
+      opacity: .7; cursor: not-allowed;
+      border-style: dashed;
+    }
+    .locked-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; color: var(--accent-cyan);
+      background: rgba(0,212,255,0.08);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 20px; padding: 2px 8px;
+    }
+
+    /* hint */
+    .field-hint {
+      font-size: 11.5px; color: var(--text-muted); line-height: 1.5;
+    }
+    .field-hint.err { color: var(--accent-red); display: none; }
+    .field-hint.err.show { display: block; }
+
+    /* ─── divider ─── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 24px 0;
+    }
+
+    /* ─── submit button ─── */
+    .btn-submit {
+      width: 100%; padding: 16px;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+      border: none; border-radius: var(--radius);
+      color: #fff; font-family: 'Cairo', 'Tajawal', sans-serif;
+      font-size: 16px; font-weight: 700;
+      cursor: pointer; position: relative; overflow: hidden;
+      transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 24px rgba(0,102,255,0.4);
+      letter-spacing: .5px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,212,255,0.5);
+    }
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+    .btn-submit:disabled {
+      opacity: .5; cursor: not-allowed; transform: none;
+    }
+    .btn-submit .btn-text { transition: opacity .2s; }
+    .btn-submit .btn-loader {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+    }
+    .btn-submit.loading .btn-text { opacity: 0; }
+    .btn-submit.loading .btn-loader { opacity: 1; }
+    .spinner {
+      width: 22px; height: 22px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── success overlay ─── */
+    .success-overlay {
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 40px 20px;
+      animation: fadeIn .5s ease;
+    }
+    .success-overlay.show { display: flex; }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, var(--accent-green), #00aaff);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin-bottom: 20px;
+      box-shadow: 0 0 40px rgba(0,255,136,0.4);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100%{box-shadow:0 0 40px rgba(0,255,136,0.4);}
+      50%{box-shadow:0 0 60px rgba(0,255,136,0.7);}
+    }
+    .success-overlay h2 { font-size: 24px; font-weight: 800; color: var(--accent-green); margin-bottom: 10px; }
+    .success-overlay p { color: var(--text-muted); font-size: 14px; line-height: 1.7; max-width: 380px; }
+
+    /* ─── already registered overlay ─── */
+    .already-overlay {
+      display: none; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center; padding: 40px 20px;
+    }
+    .already-overlay.show { display: flex; }
+    .already-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--accent-warn), #ff6600);
+      border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 32px; margin-bottom: 18px;
+      box-shadow: 0 0 30px rgba(255,170,0,0.4);
+    }
+    .already-overlay h2 { font-size: 20px; font-weight: 800; color: var(--accent-warn); margin-bottom: 8px; }
+    .already-overlay p { color: var(--text-muted); font-size: 13.5px; line-height: 1.7; max-width: 340px; }
+
+    /* ─── form wrapper ─── */
+    #formWrapper { transition: opacity .3s; }
+
+    /* ─── animations ─── */
+    @keyframes fadeDown {
+      from { opacity:0; transform:translateY(-20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(30px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity:0; } to { opacity:1; }
+    }
+
+    /* ─── footer ─── */
+    .footer {
+      margin-top: 28px; text-align: center;
+      font-size: 12px; color: var(--text-muted);
+      animation: fadeUp .7s .4s ease both;
+    }
+
+    /* ─── responsive ─── */
+    @media (max-width: 560px) {
+      .card { padding: 24px 18px 22px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .header-logo { padding: 12px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="shield-icon">🛡️</div>
+      <div class="header-logo-text">
+        <div class="logo-uni">جامعة الشعب – University of Alshaab</div>
+        <div class="logo-dept">قسم هندسة الأمن السيبراني</div>
+      </div>
+    </div>
+    <h1>نظام تسجيل التدريب الصيفي</h1>
+    <p>الفصل الصيفي – السنة الأكاديمية الحالية</p>
+  </div>
+
+  <!-- Important notice: MOI only -->
+  <div class="notice-banner">
+    <div class="icon">⚠️</div>
+    <p>
+      <strong>تنبيه مهم:</strong> هذه الاستمارة <strong>مخصصة حصراً</strong> للتدريب الصيفي في
+      <strong>وزارة الداخلية – مركز الأمن السيبراني</strong>.
+      يُرجى عدم استخدامها لأي جهة تدريب أخرى.
+    </p>
+  </div>
+
+  <!-- Once-only notice -->
+  <div class="once-banner">
+    <div class="icon">🔒</div>
+    <p>
+      <strong>ملاحظة:</strong> يمكنك إرسال طلب التسجيل <strong>مرة واحدة فقط</strong> لكل بريد جامعي.
+      تأكد من صحة بياناتك قبل الإرسال.
+    </p>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <!-- Already registered -->
+    <div class="already-overlay" id="alreadyOverlay">
+      <div class="already-icon">⚠️</div>
+      <h2>تم التسجيل مسبقاً</h2>
+      <p>لقد قمت بتسجيل طلب تدريب سابقاً باستخدام هذا البريد الجامعي.<br/>لا يمكن إرسال أكثر من طلب واحد لنفس الشخص.</p>
+    </div>
+
+    <!-- Success -->
+    <div class="success-overlay" id="successOverlay">
+      <div class="success-icon">✅</div>
+      <h2>تم إرسال طلبك بنجاح!</h2>
+      <p>تم استلام طلب تدريبك وسيتم مراجعته من قِبل القسم المختص. سيتم التواصل معك لاحقاً عبر البريد الجامعي أو رقم الهاتف المسجّل.</p>
+    </div>
+
+    <!-- Form -->
+    <div id="formWrapper">
+      <div class="section-label">📋 بيانات الطالب</div>
+
+      <form id="regForm" novalidate>
+        <div class="form-grid">
+
+          <!-- Full name -->
+          <div class="field full">
+            <label>الاسم الثلاثي <span class="req">*</span></label>
+            <input type="text" id="fullName" placeholder="مثال: أحمد محمد علي" autocomplete="name"/>
+            <span class="field-hint err" id="err-fullName">يرجى إدخال الاسم الثلاثي كاملاً</span>
+          </div>
+
+          <!-- Email -->
+          <div class="field full">
+            <label>البريد الجامعي <span class="req">*</span></label>
+            <input type="email" id="email" placeholder="example@alshaab.edu.iq" autocomplete="email" dir="ltr"/>
+            <span class="field-hint">يجب أن ينتهي البريد بـ <strong style="color:var(--accent-cyan)">@alshaab.edu.iq</strong></span>
+            <span class="field-hint err" id="err-email">البريد غير صحيح أو لا ينتهي بـ @alshaab.edu.iq</span>
+          </div>
+
+          <!-- Phone -->
+          <div class="field">
+            <label>رقم الهاتف <span class="req">*</span></label>
+            <input type="tel" id="phone" placeholder="07xxxxxxxxx" dir="ltr"/>
+            <span class="field-hint err" id="err-phone">يرجى إدخال رقم هاتف صحيح</span>
+          </div>
+
+          <!-- Stage -->
+          <div class="field">
+            <label>المرحلة الدراسية <span class="req">*</span></label>
+            <select id="stage">
+              <option value="">— اختر المرحلة —</option>
+              <option value="الأولى">الأولى</option>
+              <option value="الثانية">الثانية</option>
+              <option value="الثالثة">الثالثة</option>
+              <option value="الرابعة">الرابعة</option>
+            </select>
+            <span class="field-hint err" id="err-stage">يرجى اختيار المرحلة الدراسية</span>
+          </div>
+
+          <!-- Division -->
+          <div class="field">
+            <label>الشعبة <span class="req">*</span></label>
+            <select id="division">
+              <option value="">— اختر الشعبة —</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+              <option value="H">H</option>
+              <option value="I">I</option>
+              <option value="J">J</option>
+            </select>
+            <span class="field-hint err" id="err-division">يرجى اختيار الشعبة</span>
+          </div>
+
+          <!-- Training center (locked) -->
+          <div class="field">
+            <label>
+              جهة التدريب
+              <span class="locked-badge">🔒 محددة تلقائياً</span>
+            </label>
+            <input type="text" value="وزارة الداخلية – مركز الأمن السيبراني" readonly/>
+          </div>
+
+          <!-- Notes -->
+          <div class="field full">
+            <label>ملاحظات إضافية <span class="opt">(اختياري)</span></label>
+            <textarea id="notes" placeholder="أي معلومات إضافية تودّ إضافتها..."></textarea>
+          </div>
+
+        </div><!-- /form-grid -->
+
+        <div class="divider"></div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-text">📤 إرسال طلب التسجيل</span>
+          <span class="btn-loader"><div class="spinner"></div></span>
+        </button>
+
+      </form>
+    </div><!-- /formWrapper -->
+
+  </div><!-- /card -->
+
+  <div class="footer">
+    نظام تسجيل التدريب الصيفي &nbsp;|&nbsp; قسم هندسة الأمن السيبراني
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  // ─── Worker URL ───────────────────────────────────────────────
+  const WORKER_URL = 'https://square-voice-3ce9.alaswedraad.workers.dev';
+
+  // ─── Storage key for registered emails (localStorage) ────────
+  const STORAGE_KEY = 'cyber_registered_emails';
+
+  // ─── Helpers ─────────────────────────────────────────────────
+  function getRegistered() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+    catch { return []; }
+  }
+  function saveEmail(email) {
+    const list = getRegistered();
+    if (!list.includes(email)) { list.push(email); localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
+  }
+  function isRegistered(email) { return getRegistered().includes(email.toLowerCase().trim()); }
+
+  // ─── On load: check if already registered ─────────────────────
+  (function checkExisting() {
+    const list = getRegistered();
+    if (list.length > 0) {
+      // has at least one registration from this browser – show overlay passively
+      // (full block happens on submit)
+    }
+  })();
+
+  // ─── Validation ───────────────────────────────────────────────
+  function setError(id, show) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('show', show);
+  }
+  function markField(id, hasError) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('error', hasError);
+  }
+
+  function validate() {
+    let ok = true;
+
+    const name = document.getElementById('fullName').value.trim();
+    const nameParts = name.split(/\s+/).filter(Boolean);
+    const nameOk = nameParts.length >= 3;
+    setError('err-fullName', !nameOk); markField('fullName', !nameOk);
+    if (!nameOk) ok = false;
+
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const emailOk = /^[^\s@]+@alshaab\.edu\.iq$/.test(email);
+    setError('err-email', !emailOk); markField('email', !emailOk);
+    if (!emailOk) ok = false;
+
+    const phone = document.getElementById('phone').value.trim();
+    const phoneOk = /^07[0-9]{9}$/.test(phone);
+    setError('err-phone', !phoneOk); markField('phone', !phoneOk);
+    if (!phoneOk) ok = false;
+
+    const stage = document.getElementById('stage').value;
+    const stageOk = stage !== '';
+    setError('err-stage', !stageOk); markField('stage', !stageOk);
+    if (!stageOk) ok = false;
+
+    const division = document.getElementById('division').value;
+    const divOk = division !== '';
+    setError('err-division', !divOk); markField('division', !divOk);
+    if (!divOk) ok = false;
+
+    return ok;
+  }
+
+  // ─── Rate limit (client-side guard) ──────────────────────────
+  let lastSubmit = 0;
+  const RATE_LIMIT_MS = 30000; // 30 seconds
+
+  // ─── Format date ─────────────────────────────────────────────
+  function now() {
+    return new Date().toLocaleString('ar-IQ', {
+      timeZone: 'Asia/Baghdad',
+      year:'numeric', month:'long', day:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    });
+  }
+
+  // ─── Submit ───────────────────────────────────────────────────
+  document.getElementById('regForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    const email = document.getElementById('email').value.trim().toLowerCase();
+
+    // Duplicate check
+    if (isRegistered(email)) {
+      document.getElementById('formWrapper').style.display = 'none';
+      document.getElementById('alreadyOverlay').classList.add('show');
+      return;
+    }
+
+    // Rate limit
+    const now_ms = Date.now();
+    if (now_ms - lastSubmit < RATE_LIMIT_MS) {
+      alert('⏳ يرجى الانتظار قبل المحاولة مجدداً.');
+      return;
+    }
+    lastSubmit = now_ms;
+
+    const btn = document.getElementById('submitBtn');
+    btn.classList.add('loading'); btn.disabled = true;
+
+    const name     = document.getElementById('fullName').value.trim();
+    const phone    = document.getElementById('phone').value.trim();
+    const stage    = document.getElementById('stage').value;
+    const division = document.getElementById('division').value;
+    const notes    = document.getElementById('notes').value.trim() || '—';
+    const training = 'وزارة الداخلية – مركز الأمن السيبراني';
+
+    const msg =
+`📥 *طلب تدريب صيفي جديد*
+━━━━━━━━━━━━━━━━━━━━
+👤 *الاسم:* ${name}
+📧 *البريد الجامعي:* ${email}
+📱 *رقم الهاتف:* ${phone}
+🎓 *المرحلة:* ${stage}
+🏫 *الشعبة:* ${division}
+🏢 *جهة التدريب:* ${training}
+📝 *ملاحظات:* ${notes}
+🕒 *وقت التسجيل:* ${now()}
+━━━━━━━━━━━━━━━━━━━━
+🏛️ قسم هندسة الأمن السيبراني – جامعة الشعب`;
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      const data = await res.json();
+
+      if (data.ok) {
+        saveEmail(email);
+        document.getElementById('formWrapper').style.display = 'none';
+        document.getElementById('successOverlay').classList.add('show');
+      } else {
+        throw new Error(data.description || 'خطأ غير معروف من الخادم');
+      }
+    } catch (err) {
+      alert('❌ حدث خطأ أثناء الإرسال: ' + err.message);
+      console.error(err);
+      btn.classList.remove('loading'); btn.disabled = false;
+    }
+  });
+
+  // ─── Live validation UX ───────────────────────────────────────
+  ['fullName','email','phone','stage','division'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => { el.classList.remove('error'); });
+    el.addEventListener('change', () => { el.classList.remove('error'); });
+  });
+</script>
+</body>
+</html>
